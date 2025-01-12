@@ -1,149 +1,115 @@
-# Indonesian Sentiment Analysis: Comparative Analysis of BERT and ELMo
+# Comparative Analysis of BERT and ELMo for Indonesian Sentiment Analysis
 
-This repository contains the implementation and analysis of a comparative study between BERT (Bidirectional Encoder Representations from Transformers) and ELMo (Embeddings from Language Models) for sentiment analysis of Indonesian text. The study focuses on analyzing e-commerce reviews using the PRDICT-ID dataset from Tokopedia.
+This repository contains the implementation of a comparative study between BERT and ELMo embeddings for sentiment analysis of Indonesian text, specifically focusing on e-commerce reviews.
 
-## Project Overview
+## Overview
 
-The project implements and compares two state-of-the-art contextual embedding models for sentiment analysis:
-- ELMo implementation using TensorFlow Hub
-- BERT implementation using IndoBERT (indobert-base-uncased)
+The project implements and compares two contextual embedding approaches (BERT and ELMo) using two different classification methods (BiLSTM and Multinomial Naive Bayes) for sentiment analysis of Indonesian text. The implementation includes comprehensive preprocessing, model training, and evaluation components.
 
-Both models are integrated with a BiLSTM classification architecture to perform sentiment analysis on Indonesian language text.
+## Research Details
 
-## Dataset
+- **Dataset**: PRDICT-ID (Indonesian e-commerce reviews from Tokopedia)
+- **Models**: 
+  - BERT (IndoBERT base-uncased)
+  - ELMo (TensorFlow Hub)
+- **Classifiers**:
+  - Bidirectional LSTM
+  - Multinomial Naive Bayes
+- **Results published**: The 6th East Indonesia Conference on Computer and Information Technology (EIConCIT) 2024
 
-We use the PRDICT-ID dataset, which contains e-commerce reviews from Tokopedia. The dataset was obtained from the Data in Brief journal (Q2-ranked publication) and includes:
-- Review text in Indonesian language
-- Binary sentiment labels (positive/negative)
-- Original dataset size: 5,400 reviews
+## Requirements
 
-## Technical Implementation
-
-### Common Configuration
-
-Both implementations share the following configuration:
-
-```python
-# Model Architecture
-- Maximum sequence length: 128 tokens
-- BiLSTM layers: 32 units → 16 units
-- Dense layers: 8 units → 1 unit (sigmoid)
-
-# Training Parameters
-- Optimizer: Adam (lr=1e-5)
-- Loss: Binary crossentropy
-- Batch size: 8
-- Epochs: 10
-- Validation split: 0.2
 ```
-
-### ELMo Implementation (main7.py)
-
-Key features:
-- Pre-trained ELMo model from TensorFlow Hub
-- Batch processing for embedding generation
-- Custom text padding and truncation
-- Memory optimization through batch processing
-- 281,233 trainable parameters
-
-### BERT Implementation (main8.py)
-
-Key features:
-- IndoBERT base model (uncased)
-- BertTokenizer for text processing
-- Dual input handling (input_ids and attention_mask)
-- PyTorch to TensorFlow model conversion
-- 110,773,905 trainable parameters
-
-## Performance Results
-
-### Model Comparison
-
-| Metric             | ELMo   | BERT   | Difference |
-|-------------------|--------|--------|------------|
-| Training Accuracy | 86.11% | 99.62% | +13.51%    |
-| Validation Accuracy| 83.56% | 97.69% | +14.13%    |
-| Test Accuracy     | 84%    | 96%    | +12%       |
-| False Positives   | 101    | 8      | -93        |
-| Training Time/Epoch| 18s    | 65s    | +47s       |
-
-### Key Findings
-
-1. Performance:
-   - BERT consistently outperformed ELMo across all metrics
-   - Most significant improvement in false positive reduction
-   - Higher stability in learning patterns
-
-2. Resource Requirements:
-   - BERT requires significantly more computational resources
-   - BERT has ~394x more parameters than ELMo
-   - ELMo shows faster training and inference times
+tensorflow>=2.8.0
+transformers>=4.18.0
+tensorflow-hub>=0.12.0
+tensorflow-text>=2.8.0
+numpy>=1.21.0
+pandas>=1.4.0
+scikit-learn>=1.0.0
+seaborn>=0.11.0
+matplotlib>=3.5.0
+tqdm>=4.64.0
+```
 
 ## Project Structure
 
 ```
-├── main7.py                 # ELMo implementation
-├── main8.py                 # BERT implementation
-├── requirements.txt         # Project dependencies
-└── data/
-    └── PRDICT-ID/          # Dataset directory
-        └── vw_dataset.csv  # Preprocessed dataset
+.
+├── main7.py               # ELMo implementation
+├── main8.py               # BERT implementation
+├── requirements.txt       # Project dependencies
+└── README.md             # This file
 ```
 
-## Requirements
+## Implementation Details
 
-- Python 3.8+
-- TensorFlow 2.x
-- Transformers
-- TensorFlow Hub
-- NumPy
-- Pandas
-- Scikit-learn
-- CUDA-capable GPU (recommended)
+### Model Architectures
 
-## Installation
+#### BiLSTM Classifier
+- First BiLSTM layer: 32 units (return_sequences=True)
+- Second BiLSTM layer: 16 units
+- Dense layer: 8 units (ReLU activation)
+- Output layer: 1 unit (sigmoid activation)
 
+#### MNB Classifier
+- M-estimate smoothing (m=2)
+- PCA reduction to 256 dimensions
+- L2 normalization
+- Min-max scaling
+
+### Performance Results
+
+BiLSTM Classifier Results:
+- BERT: 96% accuracy
+- ELMo: 84% accuracy
+
+MNB Classifier Results:
+- BERT: 78% accuracy
+- ELMo: 59% accuracy
+
+## Setup and Usage
+
+1. Clone the repository:
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/indo-sentiment-analysis.git
+git clone https://github.com/yourusername/sentiment-analysis-bert-elmo.git
+cd sentiment-analysis-bert-elmo
+```
 
-# Install dependencies
+2. Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
 
-## Usage
+3. Run the implementations:
 
-To run the ELMo implementation:
+For ELMo:
 ```bash
 python main7.py
 ```
 
-To run the BERT implementation:
+For BERT:
 ```bash
 python main8.py
 ```
 
-## Results Visualization
+## Hardware Requirements
 
-Both implementations include visualization tools for:
-- Training/validation accuracy curves
-- Training/validation loss curves
-- Confusion matrices
-- Classification reports
-
-## Conclusion
-
-This study demonstrates the trade-offs between model complexity and performance in Indonesian sentiment analysis. While BERT shows superior performance across all metrics, ELMo provides a viable alternative for resource-constrained environments or applications requiring faster processing times.
+Recommended specifications:
+- GPU: NVIDIA RTX 3090TI or similar
+- CPU: 3.8GHz, 8 Cores
+- RAM: 16GB
+- Storage: 500GB
 
 ## Citation
 
-If you use this code or findings in your research, please cite:
+If you use this code in your research, please cite:
 
 ```bibtex
-@article{ilmawan2024sentiment,
-  title={Analysis of BERT and ELMo Performance in Indonesian Sentiment Classification},
+@inproceedings{ilmawan2024comparative,
+  title={Comparative Analysis of BERT and ELMo Embeddings for Indonesian Sentiment Analysis},
   author={Ilmawan, Lutfi Budi and Indra, Dolly},
-  journal={Indonesian Journal of Computing and Cybernetics Systems},
+  booktitle={The 6th East Indonesia Conference on Computer and Information Technology (EIConCIT)},
   year={2024}
 }
 ```
@@ -151,3 +117,12 @@ If you use this code or findings in your research, please cite:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Authors
+
+- Lutfi Budi Ilmawan (Universitas Muslim Indonesia)
+- Dr. Ir. Dolly Indra (Universitas Muslim Indonesia)
+
+## Acknowledgments
+
+This research was supported by Universitas Muslim Indonesia. Special thanks to the PRDICT-ID dataset creators for making their data available for research.
