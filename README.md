@@ -36,8 +36,10 @@ tqdm>=4.64.0
 
 ```
 .
-├── main7.py               # ELMo implementation
-├── main8.py               # BERT implementation
+├── main7.py               # Bi-LSTM+ELMo implementation
+├── main8.py               # Bi-LSTM+BERT implementation
+├── main7a.py              # MNB+ELMo implementation
+├── main8b.py              # MNB+BERT implementation
 ├── requirements.txt       # Project dependencies
 └── README.md             # This file
 ```
